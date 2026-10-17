@@ -96,6 +96,7 @@ def candidate_sentences(text: str) -> list[str]:
 
 def snippet(text: str, limit: int = 220) -> str:
     collapsed = re.sub(r"\s+", " ", text).strip()
+    collapsed = re.sub(r"[*_`#]+", "", collapsed)
     if len(collapsed) <= limit:
         return collapsed
     return collapsed[: limit - 1].rsplit(" ", 1)[0] + "…"

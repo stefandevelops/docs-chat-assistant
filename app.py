@@ -29,36 +29,23 @@ st.set_page_config(
 st.markdown(
     """
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap");
+      html, body, [data-testid="stAppViewContainer"], [data-testid="stMarkdown"] {
+        font-family: "Source Sans 3", "Liberation Sans", "Noto Sans", Arial, sans-serif;
+      }
       .stApp { background: #f7f5f2; }
-      .hero {
-        padding: 0.2rem 0 0.8rem 0;
-        border-bottom: 1px solid #ddd4c6;
-        margin-bottom: 1.1rem;
-      }
-      .hero h1 { font-size: 1.7rem; margin-bottom: 0.25rem; color: #1c1917; }
-      .hero p { color: #57534e; margin: 0; }
-      .badge {
-        display: inline-block;
-        padding: 0.15rem 0.55rem;
-        border-radius: 999px;
-        font-size: 0.78rem;
-        font-weight: 600;
-        background: #dcfce7;
-        color: #14532d;
-      }
-      .badge-llm { background: #dbeafe; color: #1e3a8a; }
+      .stAppDeployButton, #MainMenu { display: none; }
       .cite {
         background: #fff;
         border: 1px solid #e7e0d4;
-        border-left: 3px solid #0f6e56;
+        border-left: 4px solid #0f6e56;
         border-radius: 8px;
-        padding: 0.65rem 0.8rem;
-        margin-top: 0.45rem;
+        padding: 0.7rem 0.85rem;
+        margin-top: 0.5rem;
       }
-      .cite .src { font-weight: 600; color: #0f6e56; font-size: 0.86rem; }
-      .cite .head { color: #57534e; font-size: 0.8rem; }
-      .cite .sn { color: #44403c; font-size: 0.84rem; margin-top: 0.25rem; }
-      .doc-row { font-size: 0.86rem; color: #44403c; padding: 0.15rem 0; }
+      .cite .src { font-weight: 700; color: #0f6e56; font-size: 0.92rem; }
+      .cite .head { color: #57534e; font-size: 0.82rem; }
+      .cite .sn { color: #44403c; font-size: 0.88rem; margin-top: 0.3rem; }
     </style>
     """,
     unsafe_allow_html=True,
@@ -76,7 +63,9 @@ def render_answer(answer: Answer) -> None:
         return
     st.caption("Sources")
     for citation in answer.citations:
-        heading = f" · {citation.heading}" if citation.heading else ""
+        heading = ""
+        if citation.heading and citation.heading.lower() != citation.title.lower():
+            heading = f" · {citation.heading}"
         st.markdown(
             f"""
             <div class="cite">
@@ -91,45 +80,33 @@ def render_answer(answer: Answer) -> None:
 
 assistant = load_assistant()
 mode = llm_mode_name()
-mode_label = "LLM" if mode else "Demo (extractive, no API key)"
-badge_class = "badge badge-llm" if mode else "badge"
 
 with st.sidebar:
-    st.markdown("### VoltPath CX")
-    st.markdown(
-        f'<span class="badge {badge_class}">{mode_label}</span>',
-        unsafe_allow_html=True,
-    )
-    st.write("")
+    st.header("VoltPath CX")
+    if mode:
+        st.success(f"LLM mode · {mode}", icon="✅")
+    else:
+        st.info("Demo mode · no API key", icon="📄")
     st.write(
-        "Indexed **{} pages** / **{} chunks** from the internal help centre.".format(
-            len(assistant.documents),
-            len(assistant.chunks),
-        )
+        f"Indexed **{len(assistant.documents)} pages** / "
+        f"**{len(assistant.chunks)} chunks** from the internal help centre."
     )
-    st.markdown("#### Sample questions")
+    st.subheader("Sample questions")
     for question in SAMPLE_QUESTIONS:
         if st.button(question, key=f"sample-{question}", use_container_width=True):
             st.session_state["pending_question"] = question
             st.rerun()
-    st.markdown("#### Indexed pages")
+    st.subheader("Indexed pages")
     for document in assistant.documents:
-        st.markdown(
-            f'<div class="doc-row">{document.title}<br><em>{document.source}</em></div>',
-            unsafe_allow_html=True,
-        )
+        st.markdown(f"**{document.title}**  \n`{document.source}`")
     st.caption(
-        "Demo data only. Not a real retailer. Set OPENAI_API_KEY or GEMINI_API_KEY to switch on generated answers."
+        "Demo data only. Not a real retailer. Set OPENAI_API_KEY or GEMINI_API_KEY "
+        "to switch on generated answers."
     )
 
-st.markdown(
-    """
-    <div class="hero">
-      <h1>Chat with the VoltPath help centre</h1>
-      <p>Ask a policy question. Answers come from the indexed wiki and cite the source page.</p>
-    </div>
-    """,
-    unsafe_allow_html=True,
+st.title("Chat with the VoltPath help centre")
+st.caption(
+    "Ask a policy question. Answers come from the indexed wiki and cite the source page."
 )
 
 if "messages" not in st.session_state:
@@ -154,4 +131,6 @@ if question:
         with st.spinner("Searching the help centre…"):
             answer = assistant.ask(question)
         render_answer(answer)
-    st.session_state.messages.append({"role": "assistant", "content": answer.text, "answer": answer})
+    st.session_state.messages.append(
+        {"role": "assistant", "content": answer.text, "answer": answer}
+    )
