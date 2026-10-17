@@ -1,0 +1,60 @@
+[
+  {
+    "id": "return-window",
+    "question": "How many days do customers have to return a bike?",
+    "must_include": ["30 days"],
+    "expected_sources": ["01-returns-policy.md"]
+  },
+  {
+    "id": "return-shipping",
+    "question": "Who pays return shipping on a change-of-mind return?",
+    "must_include": ["customer pays"],
+    "expected_sources": ["01-returns-policy.md"]
+  },
+  {
+    "id": "battery-warranty",
+    "question": "How long is the battery warranty and what is the cycle limit?",
+    "must_include": ["2 years", "600"],
+    "expected_sources": ["03-warranty.md"]
+  },
+  {
+    "id": "ontario-shipping",
+    "question": "How many business days does shipping take to Ontario?",
+    "must_include": ["2–4"],
+    "expected_sources": ["02-shipping.md"]
+  },
+  {
+    "id": "new-hire-escalate",
+    "question": "When should a new CX hire escalate a ticket?",
+    "must_include": ["two failed", "$200"],
+    "expected_sources": ["04-onboarding.md"]
+  },
+  {
+    "id": "trade-in-quote",
+    "question": "How long is a trade-in quote valid?",
+    "must_include": ["14 days"],
+    "expected_sources": ["10-trade-in.md"]
+  },
+  {
+    "id": "click-collect-hold",
+    "question": "How long do we hold a click and collect order after it is ready?",
+    "must_include": ["5 calendar days"],
+    "expected_sources": ["09-click-and-collect.md"]
+  },
+  {
+    "id": "store-credit-expiry",
+    "question": "Do VoltPath store credits expire?",
+    "must_include": ["never expire"],
+    "expected_sources": ["13-store-credit-terms.pdf", "01-returns-policy.md"]
+  },
+  {
+    "id": "ceo-salary",
+    "question": "What is the CEO's salary?",
+    "abstain": true
+  },
+  {
+    "id": "sell-scooters",
+    "question": "Do university students get a campus discount code?",
+    "abstain": true
+  }
+]

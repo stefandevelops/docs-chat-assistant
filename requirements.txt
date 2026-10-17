@@ -1,0 +1,6 @@
+streamlit>=1.36,<2
+rank-bm25>=0.2.2,<0.3
+pypdf>=4.2,<6
+openai>=1.40,<2
+fpdf2>=2.7,<3
+pytest>=8.0,<9
